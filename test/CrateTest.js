@@ -5,7 +5,7 @@ const sinon = require('sinon')
 const path = require('path')
 const os = require('os')
 const mongoose = require('mongoose')
-const mockgoose = require('mockgoose')
+const Mockgoose = require('mockgoose').Mockgoose
 const async = require('async')
 const Crate = require('../lib/Crate')
 const createSchema = require('./fixtures/StubSchema')
@@ -16,9 +16,11 @@ const describe = require('mocha').describe
 const before = require('mocha').before
 const it = require('mocha').it
 
-describe('Crate', () => {
-  before((done) => {
-    mockgoose(mongoose).then(() => {
+describe('Crate', function () {
+  before(function (done) {
+    this.timeout(0)
+    let mockgoose = new Mockgoose(mongoose)
+    mockgoose.prepareStorage().then(() => {
       mongoose.Promise = Promise
       mongoose.connect('mongodb://crate/testdb', done)
     })

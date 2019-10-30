@@ -19,7 +19,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive",
+    "test": "mocha --timeout 50000 --recursive",
     "test:coverage": "istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive",
     "test:coverage:check": "istanbul cover _mocha -- --recursive && istanbul check-coverage --statement 100 --branch 100 --function 100",
     "lint": "standard",
@@ -27,14 +27,18 @@
   },
   "dependencies": {
     "async": "^2.1.4",
-    "check-types": "^7.0.0",
-    "mmmagic": "^0.4.4"
+    "check-types": "^7.4.0",
+    "mkdirp": "^0.5.1",
+    "mmmagic": "^0.4.4",
+    "mongodb-prebuilt": "^6.5.0",
+    "mv": "^2.1.1",
+    "underscore": "^1.9.1"
   },
   "devDependencies": {
     "coveralls": "^2.8",
     "istanbul": "^0.4.3",
     "mocha": "^3.2.0",
-    "mockgoose": "^6.0.8",
+    "mockgoose": "^8.0.4",
     "mongoose": "^4.7.0",
     "pre-commit": "^1.0.6",
     "should": "^11.1.1",
