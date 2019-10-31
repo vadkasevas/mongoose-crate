@@ -8,23 +8,23 @@ class StubFileProcessor {
       type: {
         type: String
       },
-      url: String
+      path: String
     }
   }
 
   process (attachment, storageProvider, model, callback) {
-    storageProvider.save(attachment, (error, url) => {
+    storageProvider.save(attachment, (error, path) => {
       model.size = attachment.size
       model.name = attachment.name
       model.type = attachment.type
-      model.url = url
+      model.path = path
 
       callback(error)
     })
   }
 
   willOverwrite (model) {
-    return !!model.url
+    return !!model.path
   }
 
   remove (storageProvider, model, callback) {

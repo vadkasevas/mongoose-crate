@@ -38,7 +38,7 @@ describe('Crate', function () {
 
         model.file.type.should.equal('image/png')
         model.file.name.should.equal('node_js_logo.png')
-        model.file.url.should.be.ok
+        model.file.path.should.be.ok
 
         // this can vary depending on file system...
         model.file.size.should.be.greaterThan(17000)
@@ -64,7 +64,7 @@ describe('Crate', function () {
         model.file.type.should.equal('foo/bar')
         model.file.name.should.equal('hello')
         model.file.size.should.equal(5)
-        model.file.url.should.be.ok
+        model.file.path.should.be.ok
 
         done()
       })
@@ -300,8 +300,8 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file url should have been populated
-        model.file.url.should.be.ok
+        // file path should have been populated
+        model.file.path.should.be.ok
 
         // save the model
         model.save(callback)
@@ -317,8 +317,8 @@ describe('Crate', function () {
           model.id.should.equal(result.id)
           model = result
 
-          // should have persisted the file url in the previous step
-          model.file.url.should.be.ok
+          // should have persisted the file path in the previous step
+          model.file.path.should.be.ok
 
           callback(error)
         })
@@ -364,10 +364,10 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file urls should have been populated
+        // file paths should have been populated
         model.files.length.should.equal(2)
-        model.files[0].url.should.be.ok
-        model.files[1].url.should.be.ok
+        model.files[0].path.should.be.ok
+        model.files[1].path.should.be.ok
 
         // save the model
         model.save(callback)
@@ -383,10 +383,10 @@ describe('Crate', function () {
           model.id.should.equal(result.id)
           model = result
 
-          // should have persisted the file url in the previous step
+          // should have persisted the file path in the previous step
           model.files.length.should.equal(2)
-          model.files[0].url.should.be.ok
-          model.files[1].url.should.be.ok
+          model.files[0].path.should.be.ok
+          model.files[1].path.should.be.ok
 
           callback(error)
         })
@@ -410,7 +410,7 @@ describe('Crate', function () {
 
           // should only have one file now
           model.files.length.should.equal(1)
-          model.files[0].url.should.be.ok
+          model.files[0].path.should.be.ok
 
           callback(error)
         })
@@ -445,8 +445,8 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file urls should have been populated
-        model.file.url.should.be.ok
+        // file paths should have been populated
+        model.file.path.should.be.ok
 
         // save the model
         model.save(callback)
@@ -483,7 +483,7 @@ describe('Crate', function () {
           model = result
 
           // should have removed field
-          should(model.file.url).not.ok
+          should(model.file.path).not.ok
 
           callback(error)
         })
@@ -515,8 +515,8 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file urls should have been populated
-        model.file.url.should.be.ok
+        // file paths should have been populated
+        model.file.path.should.be.ok
 
         // save the model
         model.save(callback)
@@ -553,7 +553,7 @@ describe('Crate', function () {
           model = result
 
           // should have removed field
-          should(model.file.url).ok
+          should(model.file.path).ok
 
           callback(error)
         })
@@ -587,13 +587,13 @@ describe('Crate', function () {
       bar: {}
     })
     fileProcessor.process = (attachment, storageProvider, model, callback) => {
-      storageProvider.save(attachment, (error, url) => {
+      storageProvider.save(attachment, (error, path) => {
         ['foo', 'bar'].forEach((property) => {
           model[property] = {
             size: attachment.size,
             name: attachment.name,
             type: attachment.type,
-            url: url
+            path: path
           }
         })
 
@@ -612,7 +612,7 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file urls should have been populated
+        // file paths should have been populated
         model.file.foo.should.be.ok
         model.file.bar.should.be.ok
 
@@ -708,8 +708,8 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file urls should have been populated
-        model.file.url.should.be.ok
+        // file paths should have been populated
+        model.file.path.should.be.ok
 
         // save the model
         model.save(callback)
@@ -750,7 +750,7 @@ describe('Crate', function () {
           model = result
 
           // should have removed field
-          should(model.file.url).not.ok
+          should(model.file.path).not.ok
 
           // add an upload again
           model.attach('file', {
@@ -758,8 +758,8 @@ describe('Crate', function () {
           }, callback)
         })
       }, (callback) => {
-        // file urls should have been populated
-        model.file.url.should.be.ok
+        // file paths should have been populated
+        model.file.path.should.be.ok
 
         // save the model
         model.save(callback)
@@ -776,7 +776,7 @@ describe('Crate', function () {
           model = result
 
           // should have the second uploaded file
-          should(model.file.url).ok
+          should(model.file.path).ok
 
           callback(error)
         })
@@ -796,7 +796,7 @@ describe('Crate', function () {
     })
   })
 
-  it('should not block if url field is blank', (done) => {
+  it('should not block if path field is blank', (done) => {
     const file = path.resolve(path.join(__dirname, '.', 'fixtures', 'node_js_logo.png'))
 
     createSchema((StubSchema, storage) => {
@@ -808,8 +808,8 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file urls should have been populated
-        model.file.url.should.be.ok
+        // file paths should have been populated
+        model.file.path.should.be.ok
 
         // save the model
         model.save(callback)
@@ -829,7 +829,7 @@ describe('Crate', function () {
         })
       }, (callback) => {
         // remove the file
-        model.file.url = null
+        model.file.path = null
         model.remove(callback)
       }]
 
@@ -859,8 +859,8 @@ describe('Crate', function () {
           path: file
         }, callback)
       }, (callback) => {
-        // file urls should have been populated
-        model.files[0].url.should.be.ok
+        // file paths should have been populated
+        model.files[0].path.should.be.ok
 
         // save the model
         model.save(callback)
