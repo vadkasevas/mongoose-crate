@@ -11,6 +11,18 @@ module.exports = (callback) => {
     remove: sinon.stub()
   }
 
+  delete storage.remove.callCount
+  storage.remove._callCount = 0
+  Object.defineProperty(storage.remove, 'callCount',
+    {
+      get: function () {
+        return storage.remove._callCount
+      },
+      set: function (value) {
+        storage.remove._callCount = value
+      }
+  });
+
   // happy path
   storage.save.callsArgWith(1, undefined, randomString(10))
   storage.remove.callsArg(1)

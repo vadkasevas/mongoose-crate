@@ -28,6 +28,7 @@
   "dependencies": {
     "async": "^2.1.4",
     "check-types": "^7.4.0",
+    "lodash": "^4.17.15",
     "mkdirp": "^0.5.1",
     "mmmagic": "^0.4.4",
     "mongodb-prebuilt": "^6.5.0",

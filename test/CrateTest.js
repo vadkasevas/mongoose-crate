@@ -15,6 +15,8 @@ const createSchemaWithUnselectedName = require('./fixtures/StubSchemaWithUnselec
 const describe = require('mocha').describe
 const before = require('mocha').before
 const it = require('mocha').it
+const crate = require('../index');
+const randomString = require('./fixtures/randomString')
 
 describe('Crate', function () {
   before(function (done) {
@@ -25,6 +27,49 @@ describe('Crate', function () {
       mongoose.connect('mongodb://crate/testdb', done)
     })
   })
+
+  it('should attach file embed',(done)=>{
+      const storage = {
+          save: sinon.stub(),
+          remove: sinon.stub()
+      };
+
+      storage.save.callsArgWith(1, undefined, randomString(10))
+      storage.remove.callsArg(1)
+
+      const StubSchema = new mongoose.Schema({
+          name: {
+              type: String,
+              required: true
+          }
+      });
+
+      StubSchema.plugin(crate, {
+          storage: storage,
+          fields: {
+              'versions.original': {}
+          }
+      });
+      const file = path.resolve(path.join(__dirname, '.', 'fixtures', 'node_js_logo.png'));
+
+      const Model = mongoose.model('test', StubSchema);
+      const model = new Model()
+      model.name = 'hello';
+      model.attach('versions.original', {
+          path: file
+      }, function(){
+
+          model.save(function(){
+
+              Model.findById(model.id, (error, result) => {
+                    console.log({result});
+                    done();
+              });
+
+          });
+
+      });
+  });
 
   it('should attach a file', (done) => {
     const file = path.resolve(path.join(__dirname, '.', 'fixtures', 'node_js_logo.png'))
@@ -336,7 +381,7 @@ describe('Crate', function () {
         should(error).not.ok
 
         // should have removed the old attachment
-        storage.remove.callCount.should.equal(1)
+        storage.remove.callCount.should.be.aboveOrEqual(1)
 
         // and stored the old and new ones
         storage.save.callCount.should.equal(2)
