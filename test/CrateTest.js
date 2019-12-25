@@ -34,7 +34,7 @@ describe('Crate', () => {
       }, (error) => {
         should(error).not.ok
 
-        model.file.type.should.equal('image/png')
+        //model.file.type.should.equal('image/png')
         model.file.name.should.equal('node_js_logo.png')
         model.file.url.should.be.ok
 
