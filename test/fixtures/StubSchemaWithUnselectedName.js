@@ -1,37 +1,38 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const crate = require('../../index')
+import crate, { FileProcessor } from '../../src'
+
 const sinon = require('sinon')
 const randomString = require('./randomString')
 
 module.exports = (callback) => {
-  const storage = {
-    save: sinon.stub(),
-    remove: sinon.stub()
-  }
-
-  // happy path
-  storage.save.callsArgWith(1, undefined, randomString(10))
-  storage.remove.callsArg(1)
-
-  const StubSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      selected: false
+    const storage = {
+        save: sinon.stub(),
+        remove: sinon.stub()
     }
-  })
 
-  StubSchema.plugin(crate, {
-    storage: storage,
-    fields: {
-      files: {
-        array: true
-      }
-    }
-  })
+    // happy path
+    storage.save.callsArgWith(2, undefined, randomString(10))
+    storage.remove.callsArg(1)
+    const processor = new FileProcessor(storage);
+    const StubSchema = new mongoose.Schema({
+        name: {
+            type: String,
+            selected: false
+        }
+    })
 
-  const model = mongoose.model(randomString(10), StubSchema)
+    StubSchema.plugin(crate, {
+        fields: {
+            files: {
+                array: true,
+                processor
+            }
+        }
+    })
 
-  callback(model, storage)
+    const model = mongoose.model(randomString(10), StubSchema)
+
+    callback(model, storage)
 }

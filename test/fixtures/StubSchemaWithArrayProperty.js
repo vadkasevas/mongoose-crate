@@ -1,7 +1,7 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const crate = require('../../index')
+import crate, { FileProcessor } from '../../src/index'
 const sinon = require('sinon')
 const randomString = require('./randomString')
 
@@ -12,7 +12,7 @@ module.exports = (callback) => {
   }
 
   // happy path
-  storage.save.callsArgWith(1, undefined, randomString(10))
+  storage.save.callsArgWith(2, undefined, randomString(10))
   storage.remove.callsArg(1)
 
   const StubSchema = new mongoose.Schema({
@@ -21,12 +21,13 @@ module.exports = (callback) => {
       required: true
     }
   })
-
+  const processor = new FileProcessor(storage);
   StubSchema.plugin(crate, {
-    storage: storage,
+    //storage: storage,
     fields: {
       files: {
-        array: true
+        array: true,
+          processor
       }
     }
   })

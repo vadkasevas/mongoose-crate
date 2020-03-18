@@ -1,6 +1,6 @@
 'use strict'
 
-const StorageProvider = require('../../lib/StorageProvider')
+const StorageProvider = require('../../src/classes/StorageProvider')
 
 class StubStorageProvider extends StorageProvider {
   save (path, callback) {

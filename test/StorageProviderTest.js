@@ -1,7 +1,7 @@
 'use strict'
 
 const should = require('should')
-const StorageProvider = require('../lib/StorageProvider')
+const StorageProvider = require('../src/classes/StorageProvider')
 const describe = require('mocha').describe
 const it = require('mocha').it
 

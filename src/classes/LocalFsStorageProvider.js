@@ -6,7 +6,7 @@ var async = require('async')
 var check = require('check-types')
 var _ = require('underscore')
 
-class LocalFsStorageProvider {
+export default class LocalFsStorageProvider {
     constructor (options) {
         this._options = options
 
@@ -16,32 +16,34 @@ class LocalFsStorageProvider {
             throw new Error('directory must be string or function')
         }
         if (!_.isFunction(this._options.path)) {
-            this._options.path = function(){
+            this._options.path = function () {
                 return '/' + path.basename(this.path)
             }
         }
     }
 
-    attachmentDir(attachment){
+    attachmentDir (attachment) {
         let dir = this._options.directory
         if (_.isFunction(dir)) {
             dir = this._options.directory.apply(attachment)
         }
-        return dir;
+        return dir
     }
 
-    save (attachment, callback) {
+    save (model,attachment, callback) {
         let dir = this.attachmentDir(attachment)
         let target = null
         async.series([
             (callback) => {
                 let targetOrPromise = this._options.path.apply(attachment)
+
                 function onTargetReolved (target) {
                     if (target.substring(0, dir.length) !== dir) {
                         return callback(new Error('Will only store files under our storage directory'))
                     }
                     callback()
                 }
+
                 if (targetOrPromise && targetOrPromise.then) {
                     return targetOrPromise.then((result) => {
                         target = path.resolve(path.join(dir, result))
@@ -83,7 +85,7 @@ class LocalFsStorageProvider {
         if (!attachment.path) {
             return callback()
         }
-        const dir = this.attachmentDir(attachment);
+        const dir = this.attachmentDir(attachment)
         if (attachment.path.substring(0, dir.length) !== dir) {
             return callback(new Error('Will not delete files that are not under our storage directory'))
         }
@@ -95,5 +97,3 @@ class LocalFsStorageProvider {
         })
     }
 }
-
-module.exports = LocalFsStorageProvider
